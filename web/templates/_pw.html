@@ -1,0 +1,11 @@
+{# macro: password field + show/hide button #}
+{% macro password_field(name, label, autocomplete, hint=None) %}
+<div class="field">
+  <label for="{{ name }}">{{ label }}</label>
+  <div class="pw">
+    <input id="{{ name }}" name="{{ name }}" type="password" autocomplete="{{ autocomplete }}" required maxlength="256"{% if hint %} aria-describedby="{{ name }}-hint"{% endif %}>
+    <button type="button" class="toggle-password" aria-controls="{{ name }}" aria-pressed="false">Dikhayein</button>
+  </div>
+  {% if hint %}<small id="{{ name }}-hint">{{ hint }}</small>{% endif %}
+</div>
+{% endmacro %}

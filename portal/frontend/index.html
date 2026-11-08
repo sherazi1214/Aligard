@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AliGuard | Welcome to the cyber world</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<canvas id="rain" aria-hidden="true"></canvas>
+<div class="scan" aria-hidden="true"></div>
+<div id="boot" role="status" aria-live="polite"><pre id="bootlog"></pre><button id="skip" class="ghost" type="button">Skip intro</button></div>
+<header class="top"><a class="logo" href="/">AliGuard</a><div id="who"></div></header>
+<main>
+<section class="hero pub">
+<p class="alert">Live threats are targeting inboxes, chats and websites right now</p>
+<h1 class="glitch" data-t="Welcome to the cyber world.">Welcome to the cyber world.</h1>
+<p class="lead">Someone is watching behind every click. AliGuard catches attacks on your inbox, WhatsApp and website before they land.</p>
+<div class="cta"><button class="btn" id="cta" type="button">Create free account</button><a class="ghost" href="#threats">See what we stop</a></div>
+<p class="fine">Registration is free. Your protection plans unlock as soon as you sign up.</p>
+</section>
+
+<section class="pub" id="threats">
+<h2>Three doors attackers use</h2>
+<div class="panels">
+<article class="panel"><h3>Your inbox</h3><p>Fake bank alerts, parcel notices and password-reset traps arrive looking like normal mail.</p><p class="ex">"Your account will be blocked in 24 hours"</p></article>
+<article class="panel"><h3>Your WhatsApp</h3><p>Prize messages and fake courier links spread through forwards and group chats.</p><p class="ex">"Congratulations! Claim your prize now"</p></article>
+<article class="panel r"><h3>Your website</h3><p>Outdated plugins, missing security headers and password guessing are how sites get taken over.</p><p class="ex">Hundreds of admin logins from one address</p></article>
+</div>
+</section>
+
+<section class="pub" aria-labelledby="demo-h">
+<h2 id="demo-h">What a verdict looks like</h2>
+<div class="term" role="img" aria-label="Illustration of a phishing email being flagged">
+<p class="dim">Illustration, not a live scan</p>
+<p>From: "Bank Alert" &lt;support@hbl-secure-login.top&gt;</p>
+<p>Subject: Your account will be blocked in 24 hours</p>
+<p class="bad">[!] sender domain imitates a bank</p>
+<p class="bad">[!] urgency wording pushes you to act fast</p>
+<p class="bad">[!] login link leads to an unrelated site</p>
+<p class="good">Verdict: PHISHING. Moved to quarantine, you were alerted.</p>
+</div>
+</section>
+
+<section class="pub" id="how">
+<h2>Up and running in three steps</h2>
+<ol class="steps">
+<li><h3>Create your free account</h3><p>Username, Gmail and a strong password, or one click with Google. Turn on two-factor sign-in later for extra safety.</p></li>
+<li><h3>Pick your shields</h3><p>Your plans appear right after you sign up. Choose Gmail, WhatsApp, website, or all three.</p></li>
+<li><h3>Stay protected</h3><p>Threats are flagged with a plain reason, so you always know why something was stopped.</p></li>
+</ol>
+</section>
+
+<section class="pub">
+<h2>Built like a security product</h2>
+<ul class="facts">
+<li>Passwords are hashed with Argon2id and are never stored in plain text.</li>
+<li>Sign-in sessions use HttpOnly cookies that page scripts cannot read.</li>
+<li>Every action is checked against CSRF attacks and rate limits.</li>
+<li>A strict content security policy blocks injected scripts.</li>
+</ul>
+<details><summary>Will AliGuard stop every attack?</summary><p>No tool can. AliGuard targets the common attacks and tells you clearly when something looks wrong.</p></details>
+<details><summary>Is registration free?</summary><p>Yes. You create an account first, then choose which shields you want.</p></details>
+</section>
+
+</main>
+<footer class="foot">AliGuard protects against common attacks. It is not a promise of total safety.</footer>
+
+<dialog id="auth">
+<form id="authform" autocomplete="on" novalidate>
+<h2 id="authtitle">Sign in</h2>
+<p class="sub" id="authsub"></p>
+<div id="f-google"><a class="gbtn" id="google" href="/api/google/start"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.2 5.5-4.7 7.2l7.6 5.9c4.4-4.1 6.9-10.1 6.9-17.6z"/><path fill="#FBBC05" d="M10.5 28.7a14.5 14.5 0 0 1 0-9.4l-7.9-6.1a24 24 0 0 0 0 21.6l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Continue with Google</a><div class="or"><span>or use your details</span></div></div>
+<div id="f-user"><label for="username">Username</label><input id="username" type="text" autocomplete="username" maxlength="20" placeholder="cyber_ninja" spellcheck="false"><small class="hint">3-20 letters, numbers or underscores</small></div>
+<div id="f-email"><label for="email" id="emaillbl">Gmail</label><input id="email" type="text" autocomplete="email" maxlength="254" placeholder="name@gmail.com" spellcheck="false"></div>
+<div id="f-pw"><label for="pw" id="pwlbl">Password</label><div class="pwrow"><input id="pw" type="password" autocomplete="current-password" maxlength="128"><button class="eye" type="button" aria-label="Show password" aria-pressed="false"><svg class="e-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="e-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.9 17.9A10.9 10.9 0 0 1 12 19C5 19 1 12 1 12a18.5 18.5 0 0 1 5.1-5.9M9.9 5.2A10 10 0 0 1 12 5c7 0 11 7 11 7a18.5 18.5 0 0 1-2.2 3.2M1 1l22 22"/></svg></button></div>
+<div class="meter" id="meter" aria-hidden="true"><i></i><i></i><i></i><i></i></div><small class="hint" id="meterlbl">Use 12 or more characters</small></div>
+<div id="f-pw2"><label for="pw2">Confirm password</label><div class="pwrow"><input id="pw2" type="password" autocomplete="new-password" maxlength="128"><button class="eye" type="button" aria-label="Show password" aria-pressed="false"><svg class="e-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="e-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.9 17.9A10.9 10.9 0 0 1 12 19C5 19 1 12 1 12a18.5 18.5 0 0 1 5.1-5.9M9.9 5.2A10 10 0 0 1 12 5c7 0 11 7 11 7a18.5 18.5 0 0 1-2.2 3.2M1 1l22 22"/></svg></button></div><small class="hint" id="matchlbl"></small></div>
+<p class="err" id="err" role="alert"></p><p class="ok" id="ok" role="status"></p>
+<button class="btn wide" id="go" type="submit">Sign in</button>
+<button class="ghost" id="forgot" type="button">Forgot password?</button>
+<button class="ghost" id="swap" type="button">Create an account instead</button>
+<button class="ghost" id="close" type="button">Close</button>
+</form>
+</dialog>
+<script src="/static/app.js"></script>
+</body>
+</html>

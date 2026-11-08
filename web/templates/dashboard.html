@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}{% block heading %}Dashboard{% endblock %}
+{% block main_class %}wide{% endblock %}
+{% block nav %}<span class="nav"><a href="/account">Account</a><a href="/settings">Settings</a><button type="button" class="link" data-action="logout">Logout</button></span>{% endblock %}
+{% block content %}
+<p>Login: <strong>{{ email }}</strong></p>
+
+<section class="cards" aria-label="Statistics">
+  <div class="card"><span class="num" id="st-scanned">-</span><span>Scanned</span></div>
+  <div class="card"><span class="num" id="st-suspicious">-</span><span>Suspicious</span></div>
+  <div class="card"><span class="num" id="st-quarantined">-</span><span>Quarantined</span></div>
+</section>
+
+<div class="tabs" role="tablist" aria-label="Dashboard sections">
+  <button type="button" role="tab" id="tab-gmail" aria-selected="true" aria-controls="panel-gmail" data-tab="gmail">Gmail Scan</button>
+  <button type="button" role="tab" id="tab-link" aria-selected="false" aria-controls="panel-link" tabindex="-1" data-tab="link">Link Check</button>
+  <button type="button" role="tab" id="tab-message" aria-selected="false" aria-controls="panel-message" tabindex="-1" data-tab="message">Message Check</button>
+</div>
+
+<section id="panel-gmail" role="tabpanel" aria-labelledby="tab-gmail">
+  <h2>Gmail accounts</h2>
+  <p id="gmail-note" class="muted" hidden></p>
+  <ul id="accounts" class="plain"></ul>
+  <label for="gmail-input" class="muted">Apna Gmail address likhein</label>
+  <input type="email" id="gmail-input" name="gmail" autocomplete="email" placeholder="name@gmail.com" maxlength="254">
+  <button type="button" id="connect-btn" data-dash="connect">Gmail connect karein</button>
+
+  <h2>Scan log</h2>
+  <form id="filters" class="filters" novalidate>
+    <div class="field"><label for="f-verdict">Verdict</label>
+      <select id="f-verdict" name="verdict">
+        <option value="">Sab</option><option value="SAFE">SAFE</option>
+        <option value="SUSPICIOUS">SUSPICIOUS</option><option value="PHISHING">PHISHING</option>
+      </select></div>
+    <div class="field"><label for="f-q">Search (sender ya subject)</label>
+      <input id="f-q" name="q" maxlength="100" autocomplete="off"></div>
+    <button type="submit">Filter lagayein</button>
+  </form>
+  <div class="table-wrap">
+    <table>
+      <caption class="sr">Scan ki hui emails</caption>
+      <thead><tr><th scope="col">Waqt</th><th scope="col">Sender</th><th scope="col">Subject</th>
+        <th scope="col">Verdict</th><th scope="col">Score</th><th scope="col">Action</th><th scope="col"><span class="sr">Tafseel</span></th></tr></thead>
+      <tbody id="scan-body"></tbody>
+    </table>
+  </div>
+  <p id="scan-empty" class="muted" hidden>Abhi koi scan nahi.</p>
+  <div class="pager">
+    <button type="button" class="secondary" id="prev" data-dash="prev">Pichla</button>
+    <span id="page-info" aria-live="polite"></span>
+    <button type="button" class="secondary" id="next" data-dash="next">Agla</button>
+  </div>
+
+  <section id="detail" aria-labelledby="detail-h" hidden>
+    <h2 id="detail-h" tabindex="-1">Scan ki tafseel</h2>
+    <div id="detail-body"></div>
+    <button type="button" class="secondary" data-dash="close-detail">Band karein</button>
+  </section>
+</section>
+
+<section id="panel-link" role="tabpanel" aria-labelledby="tab-link" hidden>
+  <h2>Link check</h2>
+  <form id="check-link" data-check="link" novalidate>
+    <div class="field"><label for="c-url">Link (URL)</label>
+      <input id="c-url" name="url" required maxlength="2048" autocomplete="off" inputmode="url">
+      <small>Link ko khola nahi jata, sirf text ka tajziya hota hai.</small></div>
+    <button type="submit">Check karein</button>
+  </form>
+  <div id="result-link" class="result" aria-live="polite"></div>
+</section>
+
+<section id="panel-message" role="tabpanel" aria-labelledby="tab-message" hidden>
+  <h2>Message check</h2>
+  <form id="check-message" data-check="message" novalidate>
+    <div class="field"><label for="m-sender">Sender (optional)</label>
+      <input id="m-sender" name="sender" maxlength="320" autocomplete="off"></div>
+    <div class="field"><label for="m-subject">Subject (optional)</label>
+      <input id="m-subject" name="subject" maxlength="500" autocomplete="off"></div>
+    <div class="field"><label for="m-text">Message ka text</label>
+      <textarea id="m-text" name="text" rows="8" maxlength="50000"></textarea></div>
+    <button type="submit">Check karein</button>
+  </form>
+  <div id="result-message" class="result" aria-live="polite"></div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="/static/dashboard.js" defer></script>{% endblock %}

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>{% block title %}AliGuard{% endblock %} · AliGuard</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <a class="skip" href="#main">Content par jayein</a>
+  <header class="top"><a class="brand" href="/">AliGuard</a>{% block nav %}{% endblock %}</header>
+  <main id="main" class="{% block main_class %}{% endblock %}" tabindex="-1">
+    <h1>{% block heading %}{% endblock %}</h1>
+    {# Server ya JS se aane wale messages sirf textContent se bharte hain #}
+    <p id="status" class="msg ok" role="status" aria-live="polite" hidden></p>
+    <p id="error" class="msg err" role="alert" tabindex="-1" hidden></p>
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="foot"><a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms of Service</a></footer>
+  <script src="/static/app.js" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

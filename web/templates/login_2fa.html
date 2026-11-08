@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}2FA{% endblock %}{% block heading %}Do-marhala tasdeeq (2FA){% endblock %}
+{% block content %}
+<form data-endpoint="/api/auth/login/2fa" data-next="/account" novalidate>
+  <div class="field"><label for="code">Authenticator ka 6 digit code, ya recovery code</label>
+    <input id="code" name="code" inputmode="text" autocomplete="one-time-code" required maxlength="16" aria-describedby="code-hint">
+    <small id="code-hint">Recovery code ka format: abcde-fghij (sirf ek bar chalta hai)</small></div>
+  <button type="submit">Tasdeeq karein</button>
+</form>
+<p><a href="/login">Wapas login par</a></p>
+{% endblock %}

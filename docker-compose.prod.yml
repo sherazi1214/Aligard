@@ -1,0 +1,108 @@
+# VPS deploy (Docker): Caddy (auto HTTPS) -> frontend (Next.js) + web (API), alag worker, Postgres, Redis.
+# Sirf Caddy ke 80/443 bahar khulte hain; DB aur Redis kisi host port par nahi.
+# Use: cp deploy/.env.prod.example .env.prod  (edit)  &&  docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
+x-app: &app
+  build: .
+  env_file: .env.prod
+  restart: unless-stopped
+  depends_on:
+    db: { condition: service_healthy }
+    redis: { condition: service_healthy }
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: ${DOMAIN:?DOMAIN set karein}
+      PORTAL_DOMAIN: ${PORTAL_DOMAIN:?PORTAL_DOMAIN set karein}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    depends_on: [web, frontend, portal]
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        BACKEND_URL: http://web:8000   # Next rewrites build par bake hote hain
+    restart: unless-stopped
+    depends_on: [web]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:3000/login || exit 1"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+
+  # Portal (signup + plans + Cyber World). Alag domain par; plan khareedne par SSO se app mein bhejta hai.
+  portal:
+    build: ./portal
+    restart: unless-stopped
+    environment:
+      BASE_URL: https://${PORTAL_DOMAIN}
+      FULL_APP_URL: https://${DOMAIN}
+      SSO_SHARED_SECRET: ${SSO_SHARED_SECRET:?SSO_SHARED_SECRET set karein}
+      PAYMENTS_TEST_MODE: ${PORTAL_PAYMENTS_TEST_MODE:-0}   # production mein 0: bina payment plan nahi milta
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+      GOOGLE_CLIENT_ID: ${PORTAL_GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${PORTAL_GOOGLE_CLIENT_SECRET:-}
+    volumes: [portal_data:/data]
+
+  migrate:
+    <<: *app
+    restart: "no"
+    command: ["alembic", "-c", "alembic.ini", "upgrade", "head"]
+
+  web:
+    <<: *app
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+
+  worker:
+    <<: *app
+    command: ["python", "-m", "backend.app.worker"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    healthcheck:
+      disable: true  # worker HTTP nahi sunta; /health/worker (web par) heartbeat check karta hai
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: aliguard
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD set karein}
+      POSTGRES_DB: aliguard
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aliguard"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:?REDIS_PASSWORD set karein}", "--maxmemory-policy", "noeviction"]
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping | grep PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+volumes:
+  pgdata:
+  caddy_data:
+  portal_data:

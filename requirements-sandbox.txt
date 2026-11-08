@@ -1,0 +1,7 @@
+-r requirements.txt
+# Link sandbox
+playwright==1.56.0
+# QR-code phishing detection (optional; na ho to QR layer chup-chaap band)
+opencv-python-headless>=4.9
+pillow>=10.3
+# phir: playwright install --with-deps chromium

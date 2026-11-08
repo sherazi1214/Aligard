@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Privacy Policy{% endblock %}
+{% block main_class %}legal{% endblock %}
+{% block heading %}Privacy Policy{% endblock %}
+{% block content %}
+<p class="draft"><strong>Template notice:</strong> this policy describes what the AliGuard software actually does.
+The operator must review it with a qualified lawyer and fill in the contact details before public launch.</p>
+
+<h2>Who we are</h2>
+<p>AliGuard is operated by <strong>{{ operator }}</strong>.
+{% if support_email %}Contact: <a href="mailto:{{ support_email }}">{{ support_email }}</a>.{% else %}Contact details: <em>to be added by the operator.</em>{% endif %}</p>
+
+<h2>What AliGuard does</h2>
+<p>AliGuard checks emails and links for phishing. You can paste a link or message for a manual check, or connect a Gmail account so that AliGuard scans new emails in the background.</p>
+
+<h2>What we collect</h2>
+<ul>
+  <li><strong>Account data:</strong> your email address and a salted Argon2id hash of your password (we never store the password itself). If you enable two-factor authentication, an encrypted TOTP secret and hashed recovery codes.</li>
+  <li><strong>Security records:</strong> sign-in sessions (hashed session identifier, IP address, browser user-agent) and an audit log of security events such as logins and password changes.</li>
+  <li><strong>Gmail connection (only if you connect Gmail):</strong> an encrypted OAuth refresh token and access token for the Gmail account, the account address, and a sync bookmark. AliGuard requests the <code>gmail.modify</code> permission so that it can read messages, add the <em>AliGuard/Suspicious</em> and <em>AliGuard/Quarantine</em> labels, and move a phishing email out of your Inbox. AliGuard does not delete emails and does not send email from your Gmail account.</li>
+  <li><strong>Scan results:</strong> for each scanned email: sender, subject, verdict and score, the reasons for the verdict, and links in <em>defanged</em> form. <strong>The email body and attachments are analysed in memory and are not stored.</strong> Text you paste into the manual checker is analysed and not stored.</li>
+  <li><strong>Your settings:</strong> alert preferences, thresholds, allow-list entries, and feedback you submit (such as &ldquo;Not phishing&rdquo;).</li>
+</ul>
+
+<h2>Third parties that may receive data</h2>
+<ul>
+  <li><strong>Google</strong> &mdash; Gmail API access you authorise. Our use of information received from Google APIs will adhere to the Google API Services User Data Policy, including the Limited Use requirements.</li>
+  <li><strong>Email delivery provider</strong> &mdash; used to send verification, password-reset and alert emails to you.</li>
+  {% if telegram_enabled %}<li><strong>Telegram</strong> &mdash; only if you link a Telegram chat: alerts (sender domain, subject, verdict) are sent to that chat.</li>{% endif %}
+  {% if vt_enabled %}<li><strong>VirusTotal</strong> &mdash; a hash of a link found in an email may be sent to look up an existing reputation report. Links are never submitted for scanning or visited by AliGuard.</li>{% endif %}
+  {% if llm_enabled %}<li><strong>OpenAI</strong> &mdash; for borderline emails, a short excerpt is sent for a second opinion <em>after</em> email addresses, phone numbers and long numbers are redacted. Content is treated as untrusted data and the result can only adjust, not override, our own checks.</li>{% endif %}
+  {% if not vt_enabled and not llm_enabled %}<li>No link-reputation or AI-review third party is enabled in this deployment.</li>{% endif %}
+  <li><strong>Have I Been Pwned</strong> &mdash; when you choose a password, only the first 5 characters of its SHA-1 hash are sent (k-anonymity) to check whether it appears in known breaches.</li>
+  <li><strong>Hosting and error monitoring</strong> &mdash; the service runs on cloud infrastructure; error reports, if enabled, exclude request bodies, cookies and query strings.</li>
+</ul>
+<p>We do not sell your data and do not use it for advertising. Email content is never used to train AI models.</p>
+
+<h2>How long we keep data</h2>
+<ul>
+  <li>Scan results: {{ retention_days }} days, then deleted automatically.</li>
+  <li>Audit log: {{ audit_days }} days.</li>
+  <li>Expired sessions and unused verification/reset tokens: removed automatically after a short grace period.</li>
+  <li>Everything else: until you delete it or delete your account.</li>
+</ul>
+
+<h2>Your controls</h2>
+<ul>
+  <li><strong>Disconnect Gmail</strong> at any time from the dashboard: stored tokens are deleted and access is revoked with Google.</li>
+  <li><strong>Delete my data</strong> in Settings permanently removes your account, scan results, settings, feedback and sessions, and revokes Google access (best effort).</li>
+  <li>You can also revoke AliGuard in your Google Account&rsquo;s security settings.</li>
+  <li>Backups made before a deletion may persist for up to the backup retention period set by the operator.</li>
+</ul>
+
+<h2>Security</h2>
+<p>Passwords are hashed with Argon2id; Gmail and 2FA secrets are encrypted at rest; sessions use secure, HttpOnly cookies; and every query is scoped to your own account. No system is perfectly secure; if we learn of a breach affecting your data we will notify you as required by law.</p>
+
+<h2>Limits of the service</h2>
+<p>AliGuard is a decision aid, not a guarantee. It can miss phishing or flag a genuine email. Quarantined emails are moved, never deleted, and can be restored from the dashboard.</p>
+
+<h2>Changes</h2>
+<p>We will update this page when the service changes and note the date of the latest revision here.</p>
+{% endblock %}

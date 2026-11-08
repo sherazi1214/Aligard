@@ -1,0 +1,70 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env: { POSTGRES_USER: aliguard, POSTGRES_PASSWORD: ci_pw, POSTGRES_DB: aliguard }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U aliguard" --health-interval 5s
+          --health-timeout 3s --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 5s
+          --health-timeout 3s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }   # gitleaks poori history scan karta hai
+      - name: Secrets scan (gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check .
+      - run: pytest -q
+      - name: Dependency vulnerability scan
+        run: pip-audit -r requirements.txt
+      - name: Real Postgres + Redis smoke test (migrations + auth pages)
+        env:
+          DATABASE_URL: postgresql+psycopg://aliguard:ci_pw@localhost:5432/aliguard
+          REDIS_URL: redis://localhost:6379/0
+          HIBP_ENABLED: "false"
+        run: |
+          alembic -c alembic.ini upgrade head
+          uvicorn backend.app.main:app --port 8000 &
+          sleep 4
+          curl -fsS http://localhost:8000/health/ready
+          curl -fsS http://localhost:8000/login > /dev/null
+          curl -fsS http://localhost:8000/dashboard > /dev/null   # login nahi: /login par redirect (303), error nahi
+          python -m backend.app.worker --once
+          curl -fsS http://localhost:8000/privacy > /dev/null
+          curl -fsS http://localhost:8000/terms > /dev/null
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20", cache: npm, cache-dependency-path: frontend/package-lock.json }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t aliguard:ci .
+      - run: docker build -t aliguard-frontend:ci --build-arg BACKEND_URL=http://web:8000 ./frontend
+      - name: Prod compose file valid
+        run: |
+          POSTGRES_PASSWORD=x REDIS_PASSWORD=x DOMAIN=example.com touch .env.prod
+          POSTGRES_PASSWORD=x REDIS_PASSWORD=x DOMAIN=example.com docker compose -f docker-compose.prod.yml config -q

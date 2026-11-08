@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Email verify{% endblock %}{% block heading %}Email verify karein{% endblock %}
+{% block content %}
+<form data-endpoint="/api/auth/verify-email" data-next="/login" data-autosubmit novalidate>
+  <input type="hidden" name="token" value="">
+  <button type="submit">Email verify karein</button>
+</form>
+<p>Link expire ho gaya? Dobara bhejein:</p>
+<form data-endpoint="/api/auth/resend-verification" novalidate>
+  <div class="field"><label for="email">Email</label>
+    <input id="email" name="email" type="email" autocomplete="email" required maxlength="254"></div>
+  <button type="submit" class="secondary">Verification email dobara bhejein</button>
+</form>
+{% endblock %}

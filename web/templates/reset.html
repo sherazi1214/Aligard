@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% from "_pw.html" import password_field %}
+{% block title %}Naya password{% endblock %}{% block heading %}Naya password set karein{% endblock %}
+{% block content %}
+<form data-endpoint="/api/auth/reset-password" data-next="/login" data-confirm="password" novalidate>
+  <input type="hidden" name="token" value="">
+  {{ password_field("password", "Naya password", "new-password", "Kam az kam 12 characters.") }}
+  {{ password_field("password_confirm", "Naya password dobara", "new-password") }}
+  <button type="submit">Password badlein</button>
+</form>
+{% endblock %}

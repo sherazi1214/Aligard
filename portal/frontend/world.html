@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AliGuard | Cyber World</title>
+<link rel="stylesheet" href="/static/world.css">
+</head>
+<body>
+<canvas id="rain" aria-hidden="true"></canvas>
+<div class="glow" id="glow" aria-hidden="true"></div>
+<div class="scan" aria-hidden="true"></div>
+<div id="enter" role="status" aria-live="polite"><div class="ring"></div><p id="enterTxt">Authenticating...</p></div>
+
+<header class="nav">
+  <a class="logo" href="/world">Ali<b>Guard</b></a>
+  <nav aria-label="Sections"><a href="#radar">Radar</a><a href="#feed">Live feed</a><a href="#shields">Shields</a><a href="#lab">Link lab</a><a href="#academy">Academy</a></nav>
+  <div class="me"><span class="chip"><i class="dot"></i><span id="uname">operator</span></span><button class="ghost" id="out" type="button">Sign out</button></div>
+</header>
+
+<main>
+<section class="hero" id="radar">
+  <div class="hero-txt">
+    <p class="tag"><i class="dot"></i> SECURE SESSION ACTIVE</p>
+    <h1 class="glitch" id="h1" data-t="Welcome to the cyber world.">Welcome to the cyber world.</h1>
+    <p class="type"><span id="typed"></span><i class="caret"></i></p>
+    <p class="lead">You are now inside the AliGuard command center. Watch threats move in real time, learn how attackers think, and switch on the shields that keep your inbox, chats and website safe.</p>
+    <div class="cta"><a class="btn" href="#shields">Activate my shields</a><a class="ghost big" href="#lab">Try the link lab</a></div>
+  </div>
+  <div class="radar" aria-hidden="true">
+    <div class="r-ring r1"></div><div class="r-ring r2"></div><div class="r-ring r3"></div><div class="r-cross"></div>
+    <div class="sweep"></div>
+    <i class="blip b1"></i><i class="blip b2"></i><i class="blip b3"></i><i class="blip b4"></i><i class="blip b5"></i>
+    <div class="core">AG</div>
+  </div>
+</section>
+
+<section class="stats" aria-label="Sample statistics">
+  <div class="stat"><b data-n="2400000">0</b><span>Phishing emails flagged</span></div>
+  <div class="stat"><b data-n="880000">0</b><span>Scam messages stopped</span></div>
+  <div class="stat"><b data-n="31000">0</b><span>Websites guarded</span></div>
+  <div class="stat"><b data-n="99.9" data-d="1">0</b><span>% uptime target</span></div>
+  <p class="fine wide">Sample figures shown for illustration while the platform is in test mode.</p>
+</section>
+
+<section id="feed" class="rv">
+  <h2>Live threat feed</h2>
+  <p class="sec-lead">A simulated stream showing how AliGuard describes each threat in plain English.</p>
+  <div class="split">
+    <div class="net"><canvas id="net" aria-label="Animated network showing attacks being blocked by a shield"></canvas><span class="cap">Network view (simulated)</span></div>
+    <div class="term" id="term" role="log" aria-live="off"></div>
+  </div>
+  <div class="ticker" aria-hidden="true"><div class="track" id="track"></div></div>
+</section>
+
+<section id="shields" class="rv">
+  <h2>Choose your shields</h2>
+  <p class="sec-lead">Pick one shield or all three. Every plan runs in test mode right now, so nothing is charged.</p>
+  <div id="cards" class="cards"></div>
+  <p class="note" id="note"></p>
+</section>
+
+<section id="lab" class="rv">
+  <h2>Link lab</h2>
+  <p class="sec-lead">Paste any link and see which warning signs it shows. This quick check runs in your browser only, and nothing is sent anywhere.</p>
+  <form class="lab" id="lab-f" novalidate>
+    <input id="lab-in" type="text" placeholder="https://secure-login-bank.top/verify?id=123" spellcheck="false" autocomplete="off" aria-label="Link to check">
+    <button class="btn" type="submit">Scan link</button>
+  </form>
+  <div class="verdict" id="verdict" role="status"></div>
+</section>
+
+<section id="academy" class="rv">
+  <h2>Cyber academy</h2>
+  <p class="sec-lead">Hover or tap a card to reveal the habit that beats each attack.</p>
+  <div class="flips">
+    <button class="flip" type="button"><span class="in"><span class="fr"><em>01</em><h3>Phishing</h3><p>Emails that copy your bank or boss.</p></span><span class="bk"><p>Check the sender domain, not the display name. Never log in through a link in an email. Open the site yourself.</p></span></span></button>
+    <button class="flip" type="button"><span class="in"><span class="fr"><em>02</em><h3>Password reuse</h3><p>One leak opens every door.</p></span><span class="bk"><p>Use a different long password for each account and keep them in a password manager.</p></span></span></button>
+    <button class="flip" type="button"><span class="in"><span class="fr"><em>03</em><h3>Fake prizes</h3><p>You never entered, yet you won.</p></span><span class="bk"><p>Real prizes never ask for a fee or a card number. Delete the message and warn your group chat.</p></span></span></button>
+    <button class="flip" type="button"><span class="in"><span class="fr"><em>04</em><h3>Two-factor sign-in</h3><p>A second lock on your account.</p></span><span class="bk"><p>Turn it on for email first. Even a stolen password then cannot open your inbox.</p></span></span></button>
+    <button class="flip" type="button"><span class="in"><span class="fr"><em>05</em><h3>Public Wi-Fi</h3><p>Open networks are open ears.</p></span><span class="bk"><p>Avoid banking on shared Wi-Fi. Use mobile data or a trusted VPN when you must.</p></span></span></button>
+    <button class="flip" type="button"><span class="in"><span class="fr"><em>06</em><h3>Urgency tricks</h3><p>"Act now or lose your account".</p></span><span class="bk"><p>Pressure is the attacker's favorite tool. Pause, verify through an official channel, then act.</p></span></span></button>
+  </div>
+</section>
+</main>
+<footer class="foot">AliGuard protects against common attacks. It is not a promise of total safety.</footer>
+<script src="/static/world.js"></script>
+</body>
+</html>

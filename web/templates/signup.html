@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% from "_pw.html" import password_field %}
+{% block title %}Signup{% endblock %}{% block heading %}Account banayein{% endblock %}
+{% block content %}
+<form data-endpoint="/api/auth/signup" data-confirm="password" data-reset-on-success novalidate>
+  <div class="field"><label for="email">Email</label>
+    <input id="email" name="email" type="email" autocomplete="email" required maxlength="254"></div>
+  {{ password_field("password", "Password", "new-password", "Kam az kam 12 characters. Aam passwords aur leaked passwords qabool nahi.") }}
+  {{ password_field("password_confirm", "Password dobara likhein", "new-password") }}
+  <button type="submit">Signup</button>
+</form>
+<p>Pehle se account hai? <a href="/login">Login</a></p>
+{% endblock %}

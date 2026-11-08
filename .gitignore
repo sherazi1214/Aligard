@@ -1,0 +1,33 @@
+# Secrets - kabhi commit nahi karne
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# Build / packaging
+dist/
+build/
+*.spec
+
+# Database / models (local)
+*.db
+*.sqlite3
+*.pkl
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Frontend (Next.js)
+node_modules/
+.next/
+frontend/.env.local
+frontend/next-env.d.ts

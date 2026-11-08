@@ -1,0 +1,11 @@
+line-length = 120
+target-version = "py312"
+[lint]
+select = ["E", "F", "I", "B", "S"]
+[lint.per-file-ignores]
+"tests/*" = ["S101", "S106", "E501"]
+"engine/dataset.py" = ["E501"]
+"engine/eval_samples.py" = ["E501"]
+
+[lint.flake8-bugbear]
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Query"]

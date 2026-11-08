@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Password bhool gaye{% endblock %}{% block heading %}Password reset{% endblock %}
+{% block content %}
+<form data-endpoint="/api/auth/forgot-password" novalidate>
+  <div class="field"><label for="email">Email</label>
+    <input id="email" name="email" type="email" autocomplete="email" required maxlength="254"></div>
+  <button type="submit">Reset link bhejein</button>
+</form>
+<p><a href="/login">Login</a></p>
+{% endblock %}

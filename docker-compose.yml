@@ -1,0 +1,31 @@
+# Sirf LOCAL development ke liye. Ports sirf 127.0.0.1 pe khulte hain
+# taake network ke doosre log tumhara DB/Redis na dekh saken.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: aliguard
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aliguard_dev_pw}
+      POSTGRES_DB: aliguard
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aliguard"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:

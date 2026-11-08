@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block heading %}Security Settings{% endblock %}
+{% block nav %}<span class="nav"><a href="/dashboard">Dashboard</a><a href="/account">Account</a><button type="button" class="link" data-action="logout">Logout</button></span>{% endblock %}
+{% block content %}
+<p>Account: <strong>{{ email }}</strong></p>
+<section class="card settings-card">
+  <h2>Alerts</h2>
+  <p class="muted">Email aur Telegram alerts ko yahan control karein.</p>
+  <form id="settings-form" novalidate>
+    <div class="field"><label><input type="checkbox" id="alerts_enabled"> Tamam alerts enable</label></div>
+    <div class="field"><label><input type="checkbox" id="email_alerts"> Email alerts</label></div>
+    <div class="field"><label><input type="checkbox" id="telegram_alerts"> Telegram alerts</label></div>
+    <div class="field"><label for="suspicious_threshold">Suspicious threshold (minimum <span id="min-suspicious">-</span>)</label><input id="suspicious_threshold" type="number" min="0" max="100" required></div>
+    <div class="field"><label for="phishing_threshold">Phishing threshold (minimum <span id="min-phishing">-</span>)</label><input id="phishing_threshold" type="number" min="1" max="100" required></div>
+    <button type="submit">Settings save karein</button>
+  </form>
+  <hr>
+  <h3>Telegram</h3><p id="telegram-status" class="muted">Loading...</p>
+  <button id="telegram-link" type="button">Telegram link karein</button>
+  <button id="telegram-unlink" class="secondary" type="button">Telegram unlink karein</button>
+</section>
+<section class="card settings-card">
+  <h2>Trusted sender / domain whitelist</h2>
+  <p class="muted">Whitelist action ko sirf trusted receiving-server DMARC pass ke sath suppress karti hai. Is se sender identity ki guarantee nahi hoti.</p>
+  <form id="whitelist-form" novalidate>
+    <div class="field"><label for="whitelist-kind">Entry type</label><select id="whitelist-kind"><option value="sender">Sender email</option><option value="domain">Domain</option></select></div>
+    <div class="field"><label for="whitelist-value">Email ya domain</label><input id="whitelist-value" maxlength="254" required autocomplete="off" placeholder="person@example.com"></div>
+    <button type="submit">Whitelist mein add karein</button>
+  </form>
+  <ul id="whitelist-list" class="plain"></ul>
+</section>
+<section class="card settings-card danger-zone">
+  <h2>Delete my data</h2>
+  <p>Ye action irreversible hai. Aap ka account, scans, settings, whitelist aur locally stored Gmail tokens delete honge. Google token revoke karne ki koshish bhi hogi.</p>
+  <button id="delete-data" class="danger" type="button">Mera account aur data delete karein</button>
+</section>
+{% endblock %}
+{% block scripts %}<script src="/static/settings.js" defer></script>{% endblock %}

@@ -1,0 +1,67 @@
+# Render Blueprint. NOTE: ye file yahan Render par chalayi nahi gayi; plan names/schema Render ke dashboard
+# (New > Blueprint) mein validate karein, kyunke Render time ke sath inhein badalta rehta hai.
+# Worker ke liye PAID instance lazmi hai: free web services idle par sleep karti hain aur worker 24/7 chalna chahiye.
+services:
+  - type: web
+    name: aliguard-web
+    runtime: docker
+    plan: starter
+    healthCheckPath: /health          # liveness; /health/ready ko sirf uptime monitor mein lagayein (DB/Redis blip par restart nahi)
+    preDeployCommand: alembic -c alembic.ini upgrade head
+    envVars: &env
+      - { key: APP_ENV, value: production }
+      - { key: LOG_FORMAT, value: json }
+      - { key: TRUST_PROXY_HEADERS, value: "true" }
+      - { key: DATABASE_URL, fromDatabase: { name: aliguard-db, property: connectionString } }
+      - { key: REDIS_URL, fromService: { type: keyvalue, name: aliguard-redis, property: connectionString } }
+      - { key: BASE_URL, sync: false }          # https://your-domain
+      - { key: CORS_ORIGINS, sync: false }
+      - { key: SECRET_KEY, sync: false }
+      - { key: ENCRYPTION_KEY, sync: false }
+      - { key: EMAIL_BACKEND, value: smtp }
+      - { key: SMTP_HOST, sync: false }
+      - { key: SMTP_USER, sync: false }
+      - { key: SMTP_PASSWORD, sync: false }
+      - { key: SMTP_FROM, sync: false }
+      - { key: GOOGLE_CLIENT_ID, sync: false }
+      - { key: GOOGLE_CLIENT_SECRET, sync: false }
+      - { key: TELEGRAM_BOT_TOKEN, sync: false }
+      - { key: TELEGRAM_BOT_USERNAME, sync: false }
+      - { key: SENTRY_DSN, sync: false }
+      - { key: OPERATOR_NAME, sync: false }
+      - { key: SUPPORT_EMAIL, sync: false }
+      - { key: VT_API_KEY, sync: false }
+      - { key: OPENAI_API_KEY, sync: false }
+
+  # Frontend (Next.js). BACKEND_URL = aliguard-web ka public URL, BUILD se pehle set karein (rewrites build par bake hote hain).
+  # Is service ka URL hi asal domain hai: backend ke BASE_URL / CORS_ORIGINS / Google redirect URI isi par set karein.
+  # NOTE: Render par /api Next ke proxy se guzarta hai, is liye backend ki per-IP rate limit sab users ko ek IP samajh sakti hai
+  # (docs/DEPLOY.md dekhein). Behtar raasta: VPS + Caddy.
+  - type: web
+    name: aliguard-frontend
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    healthCheckPath: /login
+    envVars:
+      - { key: BACKEND_URL, sync: false }     # https://aliguard-web.onrender.com
+
+  - type: worker
+    name: aliguard-worker
+    runtime: docker
+    plan: starter
+    dockerCommand: python -m backend.app.worker
+    envVars: *env
+
+  - type: keyvalue                    # Redis-compatible
+    name: aliguard-redis
+    plan: starter
+    maxmemoryPolicy: noeviction
+    ipAllowList: []                   # sirf Render ke internal network se
+
+databases:
+  - name: aliguard-db
+    plan: basic-256mb                 # paid plan: automatic backups; plan name dashboard se confirm karein
+    databaseName: aliguard
+    user: aliguard

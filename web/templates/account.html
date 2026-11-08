@@ -1,0 +1,47 @@
+{% extends "base.html" %}{% from "_pw.html" import password_field %}
+{% block title %}Account{% endblock %}{% block heading %}Account settings{% endblock %}
+{% block nav %}<span class="nav"><a href="/dashboard">Dashboard</a><a href="/settings">Settings</a><button type="button" class="link" data-action="logout">Logout</button></span>{% endblock %}
+{% block content %}
+<p>Email: <strong>{{ email }}</strong></p>
+
+<section aria-labelledby="pw-h"><h2 id="pw-h">Password badlein</h2>
+<form data-endpoint="/api/auth/change-password" data-reset-on-success data-confirm="new_password" novalidate>
+  {{ password_field("current_password", "Maujooda password", "current-password") }}
+  {{ password_field("new_password", "Naya password", "new-password", "Kam az kam 12 characters.") }}
+  {{ password_field("new_password_confirm", "Naya password dobara", "new-password") }}
+  <button type="submit">Password badlein</button>
+</form></section>
+
+<section aria-labelledby="mfa-h"><h2 id="mfa-h">Do-marhala tasdeeq (2FA)</h2>
+{% if totp_enabled %}
+  <p>2FA <strong>on</strong> hai.</p>
+  <form data-endpoint="/api/auth/2fa/disable" data-reload novalidate>
+    {{ password_field("password", "Password", "current-password") }}
+    <div class="field"><label for="dcode">Authenticator ya recovery code</label>
+      <input id="dcode" name="code" required maxlength="16" autocomplete="one-time-code"></div>
+    <button type="submit" class="danger">2FA band karein</button>
+  </form>
+{% else %}
+  <p>2FA <strong>off</strong> hai.</p>
+  <button type="button" data-action="totp-setup">2FA on karein</button>
+  <div id="totp-box" hidden>
+    <p>Authenticator app se ye QR scan karein, ya secret haath se likhein:</p>
+    <img id="totp-qr" alt="2FA QR code" width="200" height="200">
+    <p>Secret: <code id="totp-secret"></code></p>
+    <form data-endpoint="/api/auth/2fa/enable" data-show-codes novalidate>
+      <div class="field"><label for="ecode">App ka 6 digit code</label>
+        <input id="ecode" name="code" inputmode="numeric" autocomplete="one-time-code" required maxlength="6"></div>
+      <button type="submit">Tasdeeq karke on karein</button>
+    </form>
+  </div>
+  <div id="codes-box" hidden>
+    <p><strong>Recovery codes abhi mehfooz karein.</strong> Ye dobara nahi dikhenge, har code sirf ek bar chalta hai.</p>
+    <pre id="codes" tabindex="0"></pre>
+    <button type="button" data-action="reload">Maine mehfooz kar liye</button>
+  </div>
+{% endif %}</section>
+
+<section aria-labelledby="sess-h"><h2 id="sess-h">Sessions</h2>
+  <button type="button" class="secondary" data-action="logout-all">Sab devices se logout</button>
+</section>
+{% endblock %}

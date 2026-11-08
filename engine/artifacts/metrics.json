@@ -1,0 +1,30 @@
+{
+  "unseen_phrasing": {
+    "n": 280,
+    "tp": 80,
+    "fp": 16,
+    "tn": 184,
+    "fn": 0,
+    "precision": 0.8333,
+    "recall": 1.0,
+    "f1": 0.9091,
+    "false_positive_rate": 0.08,
+    "threshold": 0.5
+  },
+  "unseen_families": {
+    "n": 280,
+    "tp": 160,
+    "fp": 0,
+    "tn": 120,
+    "fn": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "false_positive_rate": 0.0,
+    "threshold": 0.5
+  },
+  "data_source": "SYNTHETIC templates: numbers asli duniya ki accuracy NAHI hain",
+  "model_version": "nb-tfidf-202610121000",
+  "sha256": "0e06e489657fbdb2d37f12a0aaea64ebf31d198f9950cf3ca0d356b39d67b7fa",
+  "n_train": 5520
+}

@@ -1,0 +1,25 @@
+# Caddy automatic HTTPS (Let's Encrypt). DOMAIN env se aata hai.
+# Ek hi domain: API/legal/static backend (web:8000) par, baqi saare pages frontend (Next.js) par.
+# /api seedha backend par jaata hai, is liye rate-limit ko asli client IP milti hai (Next proxy ke peeche nahi).
+{$DOMAIN} {
+	encode zstd gzip
+
+	@backend path /api/* /health /health/* /privacy /terms /static/*
+	handle @backend {
+		reverse_proxy web:8000
+	}
+	handle {
+		reverse_proxy frontend:3000
+	}
+
+	# Backend apna HSTS khud lagata hai; frontend ke pages ke liye bhi yahan lagta hai (">" = defer, duplicate nahi)
+	header >Strict-Transport-Security "max-age=63072000; includeSubDomains"
+	header -Server
+}
+
+# Portal (signup, plans, Cyber World) - alag domain
+{$PORTAL_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy portal:8000
+	header -Server
+}

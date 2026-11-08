@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Terms of Service{% endblock %}
+{% block main_class %}legal{% endblock %}
+{% block heading %}Terms of Service{% endblock %}
+{% block content %}
+<p class="draft"><strong>Template notice:</strong> these terms must be reviewed by a qualified lawyer, and governing law and
+contact details added by the operator, before public launch.</p>
+
+<h2>1. The service</h2>
+<p>AliGuard (operated by <strong>{{ operator }}</strong>) analyses emails and links and reports whether they look like phishing. See the <a href="/privacy">Privacy Policy</a> for how data is handled.</p>
+
+<h2>2. Your account</h2>
+<ul>
+  <li>You must provide a valid email address and keep your password and two-factor device secure.</li>
+  <li>You may connect only Gmail accounts that you own or are authorised to manage.</li>
+  <li>You are responsible for activity under your account.</li>
+</ul>
+
+<h2>3. Acceptable use</h2>
+<p>You may not attack, probe or overload the service, bypass rate limits, access another user&rsquo;s data, use the service to develop or test phishing, or resell access without permission.</p>
+
+<h2>4. Automated actions on your mailbox</h2>
+<p>When you connect Gmail, you authorise AliGuard to add labels to messages and to move messages it classifies as high-confidence phishing out of your Inbox. Messages are never permanently deleted by AliGuard. You can restore a message from the dashboard, adjust thresholds, allow-list senders, or disconnect at any time.</p>
+
+<h2>5. No guarantee</h2>
+<p>Detection is probabilistic. AliGuard may fail to detect a malicious email (false negative) or flag a legitimate one (false positive). You remain responsible for your own decisions about links, attachments and requests for money or credentials. The service is provided &ldquo;as is&rdquo;, without warranties, to the extent permitted by law.</p>
+
+<h2>6. Liability</h2>
+<p>To the extent permitted by law, the operator is not liable for indirect or consequential losses, or for losses arising from a missed or mistaken detection. Nothing here limits liability that cannot be limited by law.</p>
+
+<h2>7. Availability and changes</h2>
+<p>The service may be interrupted for maintenance or outages, and features may change. Third-party limits (for example Gmail API quotas) can delay scanning.</p>
+
+<h2>8. Ending use</h2>
+<p>You can stop at any time by using <em>Delete my data</em> in Settings. We may suspend accounts that breach these terms or put the service or other users at risk.</p>
+
+<h2>9. Contact and governing law</h2>
+<p>{% if support_email %}Contact: <a href="mailto:{{ support_email }}">{{ support_email }}</a>.{% else %}Contact details: <em>to be added by the operator.</em>{% endif %} Governing law and venue: <em>to be added by the operator.</em></p>
+{% endblock %}
